@@ -1,0 +1,397 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #2c3e50, #3498db);
+    padding: 15px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+.navbar a:hover {
+    color: #f1c40f;
+}
+
+.container {
+    margin: 40px auto;
+    max-width: 1000px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.btn {
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin: 2px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-success { background: #27ae60; color: white; }
+.btn-danger { background: #e74c3c; color: white; }
+.btn-warning { background: #f39c12; color: white; }
+.btn-info { background: #2980b9; color: white; }
+.btn-outline-danger { border: 1px solid #e74c3c; color: #e74c3c; }
+.btn-outline-danger:hover { background: #e74c3c; color: white; }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.table th {
+    background: #3498db;
+    color: white;
+}
+
+.status-taken {
+    background: #2ecc71;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.status-pending {
+    background: #f1c40f;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.status-not {
+    background: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* Animation */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicine Reminder System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
+    </div>
+    <div class="container fade-in">
+        <h2>Welcome to Medicine Reminder System</h2>
+        <p style="text-align:center;">Track medicines, set reminders, and find alternatives easily.</p>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div><a href="{{ url_for('home') }}">Home</a></div>
+    </div>
+    <div class="container fade-in">
+        <h2>Register</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required><br><br>
+            <input type="email" name="email" placeholder="Email" required><br><br>
+            <input type="text" name="phone" placeholder="Phone" required><br><br>
+            <input type="password" name="password" placeholder="Password" required><br><br>
+            <button type="submit" class="btn btn-success">Register</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div><a href="{{ url_for('home') }}">Home</a></div>
+    </div>
+    <div class="container fade-in">
+        <h2>Login</h2>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Email" required><br><br>
+            <input type="password" name="password" placeholder="Password" required><br><br>
+            <button type="submit" class="btn btn-info">Login</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Welcome, {{ user.username }}</b></div>
+        <div>
+            <a href="{{ url_for('add_medicine') }}">Add Medicine</a>
+            <a href="{{ url_for('alternative_medicines') }}">Alternatives</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="container fade-in">
+        <h2>Your Medicines</h2>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Dosage</th>
+                <th>Count</th>
+                <th>Before/After Food</th>
+                <th>Timing</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            {% for med in medicines %}
+            <tr>
+                <td>{{ med.name }}</td>
+                <td>{{ med.type }}</td>
+                <td>{{ med.dosage }} {{ med.dosage_unit }}</td>
+                <td>{{ med.count }}</td>
+                <td>{{ med.before_after_food }}</td>
+                <td>{{ med.timing }}</td>
+                <td>{{ med.expiry_date }}</td>
+                <td>
+                    {% if med.status == "Taken" %}
+                        <span class="status-taken">Taken</span>
+                    {% elif med.status == "Pending" %}
+                        <span class="status-pending">Pending</span>
+                    {% else %}
+                        <span class="status-not">Not Taken</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-success btn-sm" href="{{ url_for('update_status', id=med.id, status='Taken') }}">Mark Taken</a>
+                    <a class="btn btn-danger btn-sm" href="{{ url_for('update_status', id=med.id, status='Not Taken') }}">Not Taken</a>
+                    <a class="btn btn-warning btn-sm" href="{{ url_for('update_status', id=med.id, status='Pending') }}">Pending</a>
+                    <a class="btn btn-outline-danger btn-sm" href="{{ url_for('delete_medicine', id=med.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Medicine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="container fade-in">
+        <h2>Add Medicine</h2>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Medicine Name" required><br><br>
+            
+            <select name="type" required>
+                <option value="Tablet">Tablet</option>
+                <option value="Syrup">Syrup</option>
+                <option value="Ointment">Ointment</option>
+            </select><br><br>
+            
+            <input type="number" name="dosage" placeholder="Dosage" required>
+            <select name="dosage_unit">
+                <option value="mg">mg</option>
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+            </select><br><br>
+            
+            <select name="count">
+                <option value="0.5">Half</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select><br><br>
+            
+            <select name="before_after_food">
+                <option value="Before Food">Before Food</option>
+                <option value="After Food">After Food</option>
+            </select><br><br>
+            
+            <select name="timing">
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Night">Night</option>
+            </select><br><br>
+            
+            <input type="date" name="expiry_date" required><br><br>
+            
+            <button type="submit" class="btn btn-success">Add Medicine</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alternative Medicines</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="container fade-in">
+        <h2>Alternative Medicines</h2>
+        <table class="table">
+            <tr>
+                <th>Condition</th>
+                <th>Main Medicine</th>
+                <th>Alternative</th>
+            </tr>
+            {% for alt in alternatives %}
+            <tr>
+                <td>{{ alt.condition }}</td>
+                <td>{{ alt.medicine_name }}</td>
+                <td>{{ alt.alternative_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Medicine Reminder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('alternative_medicines') }}">Alternatives</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container fade-in">
+        <h2>Set a Reminder</h2>
+
+        <form method="POST">
+            <label>Medicine Name</label><br>
+            <select name="medicine_id" required>
+                {% for med in medicines %}
+                <option value="{{ med.id }}">{{ med.name }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label>Date</label><br>
+            <input type="date" name="reminder_date" required><br><br>
+
+            <label>Time</label><br>
+            <input type="time" name="reminder_time" required><br><br>
+
+            <label>Note</label><br>
+            <textarea name="note" rows="3" placeholder="e.g. Take after lunch with water"></textarea><br><br>
+
+            <button type="submit" class="btn btn-success">Save Reminder</button>
+        </form>
+    </div>
+
+    <div class="container fade-in">
+        <h2>Your Reminders</h2>
+        <table class="table">
+            <tr>
+                <th>Medicine</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Note</th>
+                <th>Actions</th>
+            </tr>
+            {% for r in reminders %}
+            <tr>
+                <td>{{ r.medicine_name }}</td>
+                <td>{{ r.reminder_date }}</td>
+                <td>{{ r.reminder_time }}</td>
+                <td>{{ r.note }}</td>
+                <td>
+                    <a class="btn btn-danger btn-sm" href="{{ url_for('delete_reminder', id=r.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
