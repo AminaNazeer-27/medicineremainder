@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicine Reminder System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div><b>Medicine Tracker</b></div>
+        <div>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
+    </div>
+
+    <div class="hero fade-in">
+        <h1>Welcome to Medicine Reminder & Tracker</h1>
+        <p>Track your medicines, set reminders, and find safe alternatives</p>
+    </div>
+
+    <div class="features">
+        <div class="card zoom-in">
+            <img src="{{ url_for('static', filename='images/track.png') }}" alt="Track Medicine">
+            <h3>Track Medicine</h3>
+            <p>Keep track of your medicines, expiry dates, and usage history.</p>
+        </div>
+
+        <div class="card zoom-in">
+            <img src="{{ url_for('static', filename='images/reminder.png') }}" alt="Set Reminder">
+            <h3>Set Reminder</h3>
+            <p>Never forget your dose. Get timely reminders for your medicines.</p>
+        </div>
+
+        <div class="card zoom-in">
+            <img src="{{ url_for('static', filename='images/alternative.png') }}" alt="Find Alternatives">
+            <h3>Find Alternatives</h3>
+            <p>Explore alternative medicines for better options and safety.</p>
+        </div>
+    </div>
+
+    <div class="actions fade-in">
+        <a href="{{ url_for('register') }}" class="btn btn-success">Register</a>
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container fade-in">
+    <h2>Create Account</h2>
+    <form method="POST">
+        <label>Username</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label>Email</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Phone</label><br>
+        <input type="text" name="phone" required><br><br>
+
+        <label>Password</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit" class="btn btn-success">Register</button>
+        <a href="{{ url_for('login') }}">Already have an account? Login</a>
+    </form>
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container fade-in">
+    <h2>Login</h2>
+    <form method="POST">
+        <label>Email</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Password</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+        <a href="{{ url_for('register') }}">Create Account</a>
+    </form>
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="navbar">
+    <div><b>Welcome, {{ user.username }}</b></div>
+    <div>
+        <a href="{{ url_for('add_medicine') }}">Add Medicine</a>
+        <a href="{{ url_for('remainder') }}">Reminders</a>
+        <a href="{{ url_for('alternative_medicines') }}">Alternatives</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="container fade-in">
+    <h2>Your Medicines</h2>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Dosage</th>
+            <th>Count</th>
+            <th>Food</th>
+            <th>Timing</th>
+            <th>Expiry</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for med in medicines %}
+        <tr>
+            <td>{{ med.name }}</td>
+            <td>{{ med.type }}</td>
+            <td>{{ med.dosage }} {{ med.dosage_unit }}</td>
+            <td>{{ med.count }}</td>
+            <td>{{ med.before_after_food }}</td>
+            <td>{{ med.timing }}</td>
+            <td>{{ med.expiry_date }}</td>
+            <td>
+                {% if med.status == "Taken" %}
+                    <span class="status-taken">Taken</span>
+                {% elif med.status == "Pending" %}
+                    <span class="status-pending">Pending</span>
+                {% else %}
+                    <span class="status-not">Not Taken</span>
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-success btn-sm" href="{{ url_for('update_status', id=med.id, status='Taken') }}">Mark Taken</a>
+                <a class="btn btn-warning btn-sm" href="{{ url_for('update_status', id=med.id, status='Pending') }}">Pending</a>
+                <a class="btn btn-danger btn-sm" href="{{ url_for('update_status', id=med.id, status='Not Taken') }}">Not Taken</a>
+                <a class="btn btn-info btn-sm" href="{{ url_for('delete_medicine', id=med.id) }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Medicine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container fade-in">
+    <h2>Add Medicine</h2>
+    <form method="POST">
+        <label>Name</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Type</label><br>
+        <select name="type" required>
+            <option>Tablet</option>
+            <option>Syrup</option>
+            <option>Ointment</option>
+        </select><br><br>
+
+        <label>Dosage</label><br>
+        <input type="text" name="dosage" required>
+        <select name="dosage_unit">
+            <option>mg</option>
+            <option>ml</option>
+            <option>g</option>
+        </select><br><br>
+
+        <label>Count</label><br>
+        <select name="count">
+            <option>½</option>
+            <option>1</option>
+            <option>2</option>
+        </select><br><br>
+
+        <label>Before/After Food</label><br>
+        <select name="before_after_food">
+            <option>Before Food</option>
+            <option>After Food</option>
+        </select><br><br>
+
+        <label>Timing</label><br>
+        <select name="timing">
+            <option>Morning</option>
+            <option>Afternoon</option>
+            <option>Evening</option>
+            <option>Night</option>
+        </select><br><br>
+
+        <label>Expiry Date</label><br>
+        <input type="date" name="expiry_date" required><br><br>
+
+        <button type="submit" class="btn btn-success">Add</button>
+    </form>
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Reminder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="navbar">
+    <div><b>Medicine Tracker</b></div>
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('alternative_medicines') }}">Alternatives</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="container fade-in">
+    <h2>Set a Reminder</h2>
+    <form method="POST">
+        <label>Medicine</label><br>
+        <select name="medicine_id" required>
+            {% for med in medicines %}
+            <option value="{{ med.id }}">{{ med.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Date</label><br>
+        <input type="date" name="reminder_date" required><br><br>
+
+        <label>Time</label><br>
+        <input type="time" name="reminder_time" required><br><br>
+
+        <label>Note</label><br>
+        <textarea name="note" rows="3" placeholder="e.g. Take after lunch with water"></textarea><br><br>
+
+        <button type="submit" class="btn btn-success">Save Reminder</button>
+    </form>
+</div>
+
+<div class="container fade-in">
+    <h2>Your Reminders</h2>
+    <table class="table">
+        <tr>
+            <th>Medicine</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Note</th>
+            <th>Action</th>
+        </tr>
+        {% for r, med in reminders %}
+        <tr>
+            <td>{{ med.name }}</td>
+            <td>{{ r.reminder_date }}</td>
+            <td>{{ r.reminder_time }}</td>
+            <td>{{ r.note }}</td>
+            <td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_reminder', id=r.id) }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alternative Medicines</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="navbar">
+    <div><b>Medicine Tracker</b></div>
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('remainder') }}">Reminders</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="container fade-in">
+    <h2>Alternative Medicines</h2>
+    <table class="table">
+        <tr>
+            <th>Condition</th>
+            <th>Medicine</th>
+            <th>Alternative</th>
+        </tr>
+        {% for alt in alternatives %}
+        <tr>
+            <td>{{ alt.condition }}</td>
+            <td>{{ alt.medicine_name }}</td>
+            <td>{{ alt.alternative_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
